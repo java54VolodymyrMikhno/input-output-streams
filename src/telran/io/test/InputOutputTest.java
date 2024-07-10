@@ -74,24 +74,21 @@ class InputOutputTest {
 	private void printDirectory(String dirPathStr, int depth) throws IOException {
 		Path path = Path.of(dirPathStr).toAbsolutePath().normalize();
 		int spacesPerLevel = 4;
-		String directoryColor = "\u001B[34m";
-		String fileColor = "\u001B[32m";
-		String resetColor = "\u001B[0m";
 
 		Files.walkFileTree(path, new HashSet<>(), depth, new FileVisitor<Path>() {
 			@Override
 			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
 				int level = dir.getNameCount() - path.getNameCount();
-				System.out.printf("%s%s%s%s - directory\n", " ".repeat(level * spacesPerLevel), directoryColor,
-						dir.getFileName(), resetColor);
+				System.out.printf("%s%s - directory\n", " ".repeat(level * spacesPerLevel), 
+						dir.getFileName());
 				return FileVisitResult.CONTINUE;
 			}
 
 			@Override
 			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 				int level = file.getNameCount() - path.getNameCount();
-				System.out.printf("%s%s%s%s - file\n", " ".repeat(level * spacesPerLevel), fileColor,
-						file.getFileName(), resetColor);
+				System.out.printf("%s%s - file\n", " ".repeat(level * spacesPerLevel),
+						file.getFileName());
 				return FileVisitResult.CONTINUE;
 			}
 
