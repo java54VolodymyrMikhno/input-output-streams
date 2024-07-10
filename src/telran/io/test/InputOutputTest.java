@@ -74,7 +74,7 @@ class InputOutputTest {
 	private void printDirectory(String dirPathStr, int depth) throws IOException {
 		Path path = Path.of(dirPathStr).toAbsolutePath().normalize();
 
-		Files.walkFileTree(path, new HashSet<>(), depth, new FileVisitor<Path>() {
+		Files.walkFileTree(path, new HashSet<>(), depth==-1?Integer.MAX_VALUE:depth, new FileVisitor<Path>() {
 
 			@Override
 			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
