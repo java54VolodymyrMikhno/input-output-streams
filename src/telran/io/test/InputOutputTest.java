@@ -73,36 +73,49 @@ class InputOutputTest {
 
 	private void printDirectory(String dirPathStr, int depth) throws IOException {
 		Path path = Path.of(dirPathStr).toAbsolutePath().normalize();
-		int spacesPerLevel = 4;
 
 		Files.walkFileTree(path, new HashSet<>(), depth, new FileVisitor<Path>() {
+
 			@Override
 			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-				int level = dir.getNameCount() - path.getNameCount();
-				System.out.printf("%s%s - directory\n", " ".repeat(level * spacesPerLevel), 
-						dir.getFileName());
+				printIO(dir, path, null);
 				return FileVisitResult.CONTINUE;
 			}
 
 			@Override
 			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-				int level = file.getNameCount() - path.getNameCount();
-				System.out.printf("%s%s - file\n", " ".repeat(level * spacesPerLevel),
-						file.getFileName());
+				printIO(file, path, null);
 				return FileVisitResult.CONTINUE;
 			}
 
 			@Override
 			public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
-				int level = file.getNameCount() - path.getNameCount();
-				System.err.printf("%sFailed to visit file: %s\n", " ".repeat(level * spacesPerLevel),
-						file.getFileName());
+				printIO(file, path, exc);
 				return FileVisitResult.CONTINUE;
 			}
 
 			@Override
 			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+
+				printIO(dir, path, exc);
 				return FileVisitResult.CONTINUE;
+			}
+
+			private static void printIO(Path path, Path basePath, IOException exc) {
+				String type = Files.isDirectory(path) ? "directory" : "file";
+				int spacesPerLevel = 4;
+				int level = getLevel(path, basePath);
+
+				if (exc == null) {
+					System.out.printf("%s%s - %s\n", " ".repeat(level * spacesPerLevel), path.getFileName(), type);
+				} else {
+					System.err.printf("%sFailed to visit %s: %s\n", " ".repeat(level * spacesPerLevel), type,
+							path.getFileName());
+				}
+			}
+
+			private static int getLevel(Path path, Path basePath) {
+				return path.getNameCount() - basePath.getNameCount();
 			}
 		});
 
