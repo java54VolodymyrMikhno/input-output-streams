@@ -68,7 +68,7 @@ class InputOutputTest {
 
 	@Test
 	void printDirectoryTest() throws IOException {
-		printDirectory("..", 3);
+		printDirectory("..", -1);
 	}
 
 	private void printDirectory(String dirPathStr, int depth) throws IOException {
@@ -96,8 +96,6 @@ class InputOutputTest {
 
 			@Override
 			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-
-				printIO(dir, path, exc);
 				return FileVisitResult.CONTINUE;
 			}
 
